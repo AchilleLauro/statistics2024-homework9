@@ -1,3 +1,66 @@
+// Variabile globale per il grafico delle medie e varianze campionarie
+let samplingChart;
+let varianceChart;
+
+// Funzione per generare campioni empirici da una distribuzione teorica
+function generateEmpiricalData(values, probabilities, sampleSize) {
+    const empiricalData = [];
+    for (let i = 0; i < sampleSize; i++) {
+        const random = Math.random();
+        let cumulativeProbability = 0;
+        for (let j = 0; j < probabilities.length; j++) {
+            cumulativeProbability += probabilities[j];
+            if (random <= cumulativeProbability) {
+                empiricalData.push(values[j]);
+                break;
+            }
+        }
+    }
+    return empiricalData;
+}
+
+// Funzione per calcolare media e varianza dai dati simulati (empiriche)
+function calculateEmpiricalStats(data, corrected = false) {
+    let mean = 0;
+    let variance = 0;
+    const n = data.length;
+
+    // Calcolo della media empirica
+    data.forEach((value) => {
+        mean += value;
+    });
+    mean /= n;
+
+    // Calcolo della varianza empirica
+    data.forEach((value) => {
+        variance += Math.pow(value - mean, 2);
+    });
+    variance /= corrected ? (n - 1) : n;
+
+    return { mean, variance };
+}
+
+// Funzione per calcolare la media teorica
+function calculateTheoreticalMean(values, probabilities) {
+    return values.reduce((sum, val, i) => sum + val * probabilities[i], 0);
+}
+
+// Funzione per calcolare la varianza teorica
+function calculateTheoreticalVariance(values, probabilities, mean) {
+    return values.reduce((sum, val, i) => sum + probabilities[i] * Math.pow(val - mean, 2), 0);
+}
+
+// Funzione per generare varianze campionarie
+function generateSamplingVariances(values, probabilities, m, n) {
+    const sampleVariances = [];
+    for (let i = 0; i < m; i++) {
+        const sample = generateEmpiricalData(values, probabilities, n);
+        const sampleStats = calculateEmpiricalStats(sample, true); // Varianza corretta
+        sampleVariances.push(sampleStats.variance);
+    }
+    return sampleVariances;
+}
+
 // Funzione per raggruppare i dati in intervalli (binning)
 function calculateBinnedFrequencies(data, bins) {
     const frequencies = Array(bins.length - 1).fill(0);
@@ -12,7 +75,7 @@ function calculateBinnedFrequencies(data, bins) {
     return frequencies;
 }
 
-// Modifica il grafico per rappresentare l'istogramma
+// Funzione per tracciare l'istogramma delle varianze campionarie
 function plotVarianceHistogram(sampleVariances, bins) {
     const ctx = document.getElementById('varianceChart').getContext('2d');
     const frequencies = calculateBinnedFrequencies(sampleVariances, bins);
@@ -26,7 +89,7 @@ function plotVarianceHistogram(sampleVariances, bins) {
     varianceChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: bins.map((b, i) => i < bins.length - 1 ? `${b}-${bins[i + 1]}` : null).filter(Boolean),
+            labels: bins.map((b, i) => i < bins.length - 1 ? `${b.toFixed(2)} - ${bins[i + 1].toFixed(2)}` : null).filter(Boolean),
             datasets: [
                 {
                     label: 'Frequency of Sample Variances',
@@ -63,7 +126,7 @@ function plotVarianceHistogram(sampleVariances, bins) {
     });
 }
 
-// Aggiorna il listener del form per utilizzare l'istogramma
+// Event listener per il form modificato
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -91,4 +154,3 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     // Traccia l'istogramma delle varianze campionarie
     plotVarianceHistogram(sampleVariances, bins);
 });
-
