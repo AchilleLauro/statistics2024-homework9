@@ -153,4 +153,21 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
 
     // Traccia l'istogramma delle varianze campionarie
     plotVarianceHistogram(sampleVariances, bins);
+
+    // Calcola le statistiche teoriche ed empiriche
+    const theoreticalMean = calculateTheoreticalMean(values, probabilities);
+    const theoreticalVariance = calculateTheoreticalVariance(values, probabilities, theoreticalMean);
+    const empiricalStats = calculateEmpiricalStats(sampleVariances);
+    const empiricalMean = empiricalStats.mean.toFixed(3);
+    const empiricalVariance = empiricalStats.variance.toFixed(3);
+
+    // Mostra le statistiche nella UI
+    document.getElementById('varianceStats').innerHTML = `
+        <strong>Variance Distribution Statistics:</strong><br>
+        <ul>
+            <li>Empirical Mean of Sample Variances: ${empiricalMean}</li>
+            <li>Theoretical Variance: ${theoreticalVariance.toFixed(3)}</li>
+            <li>Empirical Variance of Sample Variances: ${empiricalVariance}</li>
+        </ul>
+    `;
 });
