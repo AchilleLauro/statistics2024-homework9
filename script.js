@@ -1,101 +1,38 @@
-// Variabile globale per il grafico delle medie e varianze campionarie
-let samplingChart;
-let varianceChart;
-
-// Funzione per generare campioni empirici da una distribuzione teorica
-function generateEmpiricalData(values, probabilities, sampleSize) {
-    const empiricalData = [];
-    for (let i = 0; i < sampleSize; i++) {
-        const random = Math.random();
-        let cumulativeProbability = 0;
-        for (let j = 0; j < probabilities.length; j++) {
-            cumulativeProbability += probabilities[j];
-            if (random <= cumulativeProbability) {
-                empiricalData.push(values[j]);
+// Funzione per raggruppare i dati in intervalli (binning)
+function calculateBinnedFrequencies(data, bins) {
+    const frequencies = Array(bins.length - 1).fill(0);
+    data.forEach(value => {
+        for (let i = 0; i < bins.length - 1; i++) {
+            if (value >= bins[i] && value < bins[i + 1]) {
+                frequencies[i]++;
                 break;
             }
         }
-    }
-    return empiricalData;
-}
-
-// Funzione per calcolare media e varianza dai dati simulati (empiriche)
-function calculateEmpiricalStats(data, corrected = false) {
-    let mean = 0;
-    let variance = 0;
-    const n = data.length;
-
-    // Calcolo della media empirica
-    data.forEach((value) => {
-        mean += value;
     });
-    mean /= n;
-
-    // Calcolo della varianza empirica
-    data.forEach((value) => {
-        variance += Math.pow(value - mean, 2);
-    });
-    variance /= corrected ? (n - 1) : n;
-
-    return { mean, variance };
+    return frequencies;
 }
 
-// Funzione per calcolare la media teorica
-function calculateTheoreticalMean(values, probabilities) {
-    return values.reduce((sum, val, i) => sum + val * probabilities[i], 0);
-}
-
-// Funzione per calcolare la varianza teorica
-function calculateTheoreticalVariance(values, probabilities, mean) {
-    return values.reduce((sum, val, i) => sum + probabilities[i] * Math.pow(val - mean, 2), 0);
-}
-
-// Funzione per generare varianze campionarie
-function generateSamplingVariances(values, probabilities, m, n) {
-    const sampleVariances = [];
-    for (let i = 0; i < m; i++) {
-        const sample = generateEmpiricalData(values, probabilities, n);
-        const sampleStats = calculateEmpiricalStats(sample, true); // Varianza corretta
-        sampleVariances.push(sampleStats.variance);
-    }
-    return sampleVariances;
-}
-
-// Funzione per tracciare il grafico delle varianze campionarie
-function plotVarianceDistribution(sampleVariances, theoreticalVariance) {
+// Modifica il grafico per rappresentare l'istogramma
+function plotVarianceHistogram(sampleVariances, bins) {
     const ctx = document.getElementById('varianceChart').getContext('2d');
-
-    // Calcola media e varianza delle varianze campionarie
-    const empiricalStats = calculateEmpiricalStats(sampleVariances);
-    const empiricalMean = empiricalStats.mean.toFixed(3);
-    const empiricalVariance = empiricalStats.variance.toFixed(3);
-
-    // Mostra le statistiche nella UI
-    document.getElementById('varianceStats').innerHTML = `
-        <strong>Variance Distribution Statistics:</strong><br>
-        <ul>
-            <li>Empirical Mean of Sample Variances: ${empiricalMean}</li>
-            <li>Theoretical Variance: ${theoreticalVariance.toFixed(3)}</li>
-            <li>Empirical Variance of Sample Variances: ${empiricalVariance}</li>
-        </ul>
-    `;
+    const frequencies = calculateBinnedFrequencies(sampleVariances, bins);
 
     // Distruggi il grafico precedente, se esiste
     if (varianceChart) {
         varianceChart.destroy();
     }
 
-    // Crea il nuovo grafico
+    // Crea l'istogramma
     varianceChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: sampleVariances,
+            labels: bins.map((b, i) => i < bins.length - 1 ? `${b}-${bins[i + 1]}` : null).filter(Boolean),
             datasets: [
                 {
-                    label: 'Sample Variances',
-                    data: sampleVariances,
-                    backgroundColor: 'rgba(153, 102, 255, 0.7)',
-                    borderColor: 'rgba(153, 102, 255, 1)',
+                    label: 'Frequency of Sample Variances',
+                    data: frequencies,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
                 }
             ]
@@ -105,14 +42,14 @@ function plotVarianceDistribution(sampleVariances, theoreticalVariance) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Distribution of Sample Variances'
+                    text: 'Histogram of Sample Variances'
                 }
             },
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Sample Variance'
+                        text: 'Variance Range'
                     }
                 },
                 y: {
@@ -126,7 +63,7 @@ function plotVarianceDistribution(sampleVariances, theoreticalVariance) {
     });
 }
 
-// Event listener per il form modificato
+// Aggiorna il listener del form per utilizzare l'istogramma
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -148,10 +85,10 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     // Genera le varianze campionarie
     const sampleVariances = generateSamplingVariances(values, probabilities, numberOfSamples, sampleSize);
 
-    // Calcola le statistiche teoriche
-    const theoreticalMean = calculateTheoreticalMean(values, probabilities);
-    const theoreticalVariance = calculateTheoreticalVariance(values, probabilities, theoreticalMean);
+    // Definisci gli intervalli (bins) per l'istogramma
+    const bins = [0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0];
 
-    // Traccia il grafico delle varianze campionarie
-    plotVarianceDistribution(sampleVariances, theoreticalVariance);
+    // Traccia l'istogramma delle varianze campionarie
+    plotVarianceHistogram(sampleVariances, bins);
 });
+
