@@ -61,6 +61,18 @@ function generateSamplingVariances(values, probabilities, m, n) {
     return sampleVariances;
 }
 
+// Funzione per calcolare i bins dinamicamente
+function calculateBins(data, binCount) {
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const step = (max - min) / binCount;
+    const bins = [];
+    for (let i = 0; i <= binCount; i++) {
+        bins.push(min + i * step);
+    }
+    return bins;
+}
+
 // Funzione per raggruppare i dati in intervalli (binning)
 function calculateBinnedFrequencies(data, bins) {
     const frequencies = Array(bins.length - 1).fill(0);
@@ -148,8 +160,9 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     // Genera le varianze campionarie
     const sampleVariances = generateSamplingVariances(values, probabilities, numberOfSamples, sampleSize);
 
-    // Definisci gli intervalli (bins) per l'istogramma
-    const bins = [0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0];
+    // Definisci gli intervalli (bins) dinamicamente
+    const binCount = 10; // Numero di intervalli desiderati
+    const bins = calculateBins(sampleVariances, binCount);
 
     // Traccia l'istogramma delle varianze campionarie
     plotVarianceHistogram(sampleVariances, bins);
