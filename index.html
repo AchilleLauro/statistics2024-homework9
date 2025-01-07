@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Mean, Variance, and LLN in Cybersecurity</title>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Properties of the Sample Mean and Variance</h1>
+    <h2>Sample Mean</h2>
+    <ul>
+        <li><strong>Expected Value:</strong> The sample mean is an unbiased estimator of the population mean, meaning its expected value equals the true population mean.</li>
+        <li><strong>Variance:</strong> The variance of the sample mean is equal to the population variance divided by the sample size (\(\sigma^2/n\)). This implies that, as the sample size increases, the variance of the sample mean decreases, leading to more precise estimates.</li>
+    </ul>
+
+    <h2>Sample Variance</h2>
+    <ul>
+        <li><strong>Expected Value:</strong> The corrected sample variance (dividing by \(n-1\) instead of \(n\)) is an unbiased estimator of the population variance. This correction, known as Bessel's correction, compensates for the bias in the uncorrected sample variance.</li>
+        <li><strong>Distribution:</strong> For samples from a normally distributed population, the sample variance follows a chi-square distribution with \(n-1\) degrees of freedom.</li>
+    </ul>
+
+    <h1>The Law of Large Numbers (LLN)</h1>
+    <p>The Law of Large Numbers states that, as the number of observations increases, the sample mean tends to converge to the true population mean. There are two main versions:</p>
+    <ul>
+        <li><strong>Weak LLN:</strong> The sample mean converges in probability to the population mean.</li>
+        <li><strong>Strong LLN:</strong> The sample mean converges almost surely to the population mean.</li>
+    </ul>
+
+    <h1>Applications of the LLN in Cybersecurity</h1>
+    <ol>
+        <li><strong>Random Number Generation:</strong> 
+            <p>In cryptography, random number generation is crucial for creating secure keys. The LLN ensures that, with a large number of samples, the statistical properties of the generated numbers closely match the expected properties, providing the uniformity and unpredictability required for secure encryption.</p>
+        </li>
+        <li><strong>Anomaly Detection:</strong> 
+            <p>In network monitoring, the LLN can be used to establish "normal" behavior patterns based on large datasets. Significant deviations from these patterns may indicate suspicious activities or potential security threats.</p>
+        </li>
+        <li><strong>Risk Assessment:</strong> 
+            <p>Organizations can analyze large datasets of past security incidents to predict the likelihood of future attacks. This allows for more effective allocation of resources to mitigate risks.</p>
+        </li>
+    </ol>
+
+    <p>In summary, understanding the properties of the sample mean and variance, combined with the Law of Large Numbers, is crucial in fields like cybersecurity. These concepts enable accurate data analysis, improve anomaly detection, and enhance the reliability of cryptographic systems.</p>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
