@@ -44,6 +44,67 @@
 
     <p>In summary, understanding the properties of the sample mean and variance, combined with the Law of Large Numbers, is crucial in fields like cybersecurity. These concepts enable accurate data analysis, improve anomaly detection, and enhance the reliability of cryptographic systems.</p>
 
+
+    <h1>Fundamental Ideas of Main Encryption Methods and Their Statistical Properties</h1>
+
+    <p>Encryption is the process of converting plaintext into ciphertext to prevent unauthorized access. Various encryption methods have been developed, each with unique principles and statistical properties. Understanding these methods and their statistical characteristics is crucial for evaluating their security and effectiveness.</p>
+
+    <h2>1. Symmetric Key Encryption</h2>
+    <p>In symmetric key encryption, the same key is used for both encryption and decryption. The security of this method relies on keeping the key secret.</p>
+
+    <h3>1.1 Block Ciphers</h3>
+    <p>Block ciphers encrypt data in fixed-size blocks (e.g., 64 or 128 bits). Common examples include the Data Encryption Standard (DES) and the Advanced Encryption Standard (AES).</p>
+
+    <h4>Statistical Properties:</h4>
+    <ul>
+        <li><strong>Confusion and Diffusion:</strong> Claude Shannon introduced these concepts to enhance security. Confusion obscures the relationship between the key and ciphertext, while diffusion spreads the plaintext's statistical structure over the ciphertext. This combination thwarts statistical cryptanalysis. :contentReference[oaicite:0]{index=0}</li>
+        <li><strong>Complementation Property:</strong> DES exhibits the complementation property, where encrypting the complement of a plaintext with the complement of a key yields the complement of the ciphertext. This property can reduce the effort required for a brute-force attack by a factor of 2 under certain conditions. :contentReference[oaicite:1]{index=1}</li>
+        <li><strong>Weak and Semi-Weak Keys:</strong> DES has specific weak and semi-weak keys that can result in encryption behaving identically to decryption, posing potential vulnerabilities if such keys are used. :contentReference[oaicite:2]{index=2}</li>
+    </ul>
+
+    <h3>1.2 Stream Ciphers</h3>
+    <p>Stream ciphers encrypt data one bit or byte at a time, creating a keystream that is combined with the plaintext, often using the XOR operation. Examples include RC4 and the Salsa20 family.</p>
+
+    <h4>Statistical Properties:</h4>
+    <ul>
+        <li><strong>Keystream Randomness:</strong> The security of stream ciphers depends on the statistical randomness of the keystream. Any detectable patterns can lead to vulnerabilities.</li>
+        <li><strong>Periodicity:</strong> A keystream with a short period can be exploited. Therefore, a long period is essential to prevent repetition and potential attacks.</li>
+    </ul>
+
+    <h2>2. Asymmetric Key Encryption (Public Key Cryptography)</h2>
+    <p>Asymmetric encryption uses a pair of keys: a public key for encryption and a private key for decryption. This method facilitates secure communication without the need to share secret keys.</p>
+
+    <h3>2.1 RSA Algorithm</h3>
+    <p>RSA is a widely used public-key encryption algorithm based on the mathematical difficulty of factoring large composite numbers.</p>
+
+    <h4>Statistical Properties:</h4>
+    <ul>
+        <li><strong>Deterministic Nature:</strong> Basic RSA encryption is deterministic; encrypting the same plaintext with the same key always yields the same ciphertext. This determinism can be a vulnerability, as identical plaintexts produce identical ciphertexts.</li>
+        <li><strong>Probabilistic Encryption:</strong> To achieve semantic security, RSA can be combined with probabilistic schemes like Optimal Asymmetric Encryption Padding (OAEP), which introduces randomness to ensure that identical plaintexts encrypt to different ciphertexts. :contentReference[oaicite:3]{index=3}</li>
+    </ul>
+
+    <h2>3. Probabilistic Encryption</h2>
+    <p>Probabilistic encryption incorporates randomness into the encryption process, ensuring that the same plaintext encrypted multiple times yields different ciphertexts. This approach enhances security by preventing attackers from inferring information based on ciphertext patterns.</p>
+
+    <h4>Statistical Properties:</h4>
+    <ul>
+        <li><strong>Semantic Security:</strong> Probabilistic encryption schemes aim to achieve semantic security, meaning that no significant information about the plaintext can be inferred from the ciphertext. :contentReference[oaicite:4]{index=4}</li>
+        <li><strong>Indistinguishability:</strong> A probabilistic encryption scheme should ensure that ciphertexts are indistinguishable from random data, thwarting attempts at statistical analysis. :contentReference[oaicite:5]{index=5}</li>
+    </ul>
+
+    <h2>4. Statistical Methods in Cryptanalysis</h2>
+    <p>Understanding the statistical properties of encryption methods is essential not only for designing secure systems but also for cryptanalysis—the practice of breaking cryptographic codes.</p>
+
+    <h4>Key Points:</h4>
+    <ul>
+        <li><strong>Frequency Analysis:</strong> Early cryptanalysis techniques, such as frequency analysis, exploited statistical properties of plaintext languages. For instance, in English text, certain letters appear more frequently, and simple substitution ciphers fail to obscure these frequencies. :contentReference[oaicite:6]{index=6}</li>
+        <li><strong>Modern Cryptanalysis:</strong> Contemporary cryptanalysis employs advanced statistical methods to detect non-randomness in ciphertexts, which can indicate weaknesses in the encryption algorithm. :contentReference[oaicite:7]{index=7}</li>
+    </ul>
+
+    <h2>5. Conclusion</h2>
+    <p>Encryption methods are foundational to securing digital communication. A deep understanding of their fundamental principles and statistical properties is vital for both developing robust cryptographic systems and analyzing their security. As computational capabilities advance, continuous evaluation and enhancement of these methods are necessary to maintain data security.</p>
+
+    
     <script src="script.js"></script>
 
 </body>
