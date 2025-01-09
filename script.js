@@ -1,8 +1,6 @@
-// Variabile globale per il grafico delle medie e varianze campionarie
 let samplingChart;
 let varianceChart;
 
-// Funzione per generare campioni empirici da una distribuzione teorica
 function generateEmpiricalData(values, probabilities, sampleSize) {
     const empiricalData = [];
     for (let i = 0; i < sampleSize; i++) {
@@ -19,7 +17,6 @@ function generateEmpiricalData(values, probabilities, sampleSize) {
     return empiricalData;
 }
 
-// Funzione per calcolare media e varianza dai dati simulati (empiriche)
 function calculateEmpiricalStats(data, corrected = false) {
     let mean = 0;
     let variance = 0;
@@ -31,7 +28,6 @@ function calculateEmpiricalStats(data, corrected = false) {
     });
     mean /= n;
 
-    // Calcolo della varianza empirica
     data.forEach((value) => {
         variance += Math.pow(value - mean, 2);
     });
@@ -40,17 +36,14 @@ function calculateEmpiricalStats(data, corrected = false) {
     return { mean, variance };
 }
 
-// Funzione per calcolare la media teorica
 function calculateTheoreticalMean(values, probabilities) {
     return values.reduce((sum, val, i) => sum + val * probabilities[i], 0);
 }
 
-// Funzione per calcolare la varianza teorica
 function calculateTheoreticalVariance(values, probabilities, mean) {
     return values.reduce((sum, val, i) => sum + probabilities[i] * Math.pow(val - mean, 2), 0);
 }
 
-// Funzione per generare varianze campionarie
 function generateSamplingVariances(values, probabilities, m, n) {
     const sampleVariances = [];
     for (let i = 0; i < m; i++) {
@@ -61,7 +54,6 @@ function generateSamplingVariances(values, probabilities, m, n) {
     return sampleVariances;
 }
 
-// Funzione per calcolare i bins dinamicamente
 function calculateBins(data, binCount) {
     const min = Math.min(...data);
     const max = Math.max(...data);
@@ -73,7 +65,6 @@ function calculateBins(data, binCount) {
     return bins;
 }
 
-// Funzione per raggruppare i dati in intervalli (binning)
 function calculateBinnedFrequencies(data, bins) {
     const frequencies = Array(bins.length - 1).fill(0);
     data.forEach(value => {
@@ -87,17 +78,14 @@ function calculateBinnedFrequencies(data, bins) {
     return frequencies;
 }
 
-// Funzione per tracciare l'istogramma delle varianze campionarie
 function plotVarianceHistogram(sampleVariances, bins) {
     const ctx = document.getElementById('varianceChart').getContext('2d');
     const frequencies = calculateBinnedFrequencies(sampleVariances, bins);
 
-    // Distruggi il grafico precedente, se esiste
     if (varianceChart) {
         varianceChart.destroy();
     }
 
-    // Crea l'istogramma
     varianceChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -142,39 +130,31 @@ function plotVarianceHistogram(sampleVariances, bins) {
 document.getElementById('dataForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    // Leggi i valori e le probabilità inseriti
     const values = document.getElementById('values').value.split(',').map(v => parseFloat(v.trim()));
     const probabilities = document.getElementById('probabilities').value.split(',').map(p => parseFloat(p.trim()));
 
-    // Controlla che le probabilità siano valide
     const totalProbability = probabilities.reduce((sum, p) => sum + p, 0);
     if (Math.abs(totalProbability - 1) > 0.001) {
         alert('Theoretical probabilities must sum to 1. Please correct your input.');
         return;
     }
 
-    // Leggi il sample size e il numero di campioni
     const sampleSize = parseInt(document.getElementById('sampleSize').value, 10);
     const numberOfSamples = parseInt(document.getElementById('numberOfSamples').value, 10);
 
-    // Genera le varianze campionarie
     const sampleVariances = generateSamplingVariances(values, probabilities, numberOfSamples, sampleSize);
 
-    // Definisci gli intervalli (bins) dinamicamente
-    const binCount = 10; // Numero di intervalli desiderati
+    const binCount = 10; 
     const bins = calculateBins(sampleVariances, binCount);
 
-    // Traccia l'istogramma delle varianze campionarie
     plotVarianceHistogram(sampleVariances, bins);
 
-    // Calcola le statistiche teoriche ed empiriche
     const theoreticalMean = calculateTheoreticalMean(values, probabilities);
     const theoreticalVariance = calculateTheoreticalVariance(values, probabilities, theoreticalMean);
     const empiricalStats = calculateEmpiricalStats(sampleVariances);
     const empiricalMean = empiricalStats.mean.toFixed(3);
     const empiricalVariance = empiricalStats.variance.toFixed(3);
 
-    // Mostra le statistiche nella UI
     document.getElementById('varianceStats').innerHTML = `
         <strong>Variance Distribution Statistics:</strong><br>
         <ul>
